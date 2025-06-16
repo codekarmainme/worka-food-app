@@ -19,6 +19,8 @@ import 'package:food_app/provider/cart_provider.dart';
 import 'package:food_app/model/food_oncart.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:food_app/constants/app_colors.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 class OrderScreen extends StatefulWidget {
   OrderScreen({super.key});
 
@@ -28,13 +30,14 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   StreamSubscription? connection;
-  List<FoodItem> filteredFoodItems =foodItems; // To store filtered food items
+  List<FoodItem> filteredFoodItems = foodItems; // To store filtered food items
   final TextEditingController _searchController = TextEditingController();
-   String activeCatagory='All';
+  String activeCatagory = 'All';
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterFoodItems); // Add listener to the search controller
+    _searchController
+        .addListener(_filterFoodItems); // Add listener to the search controller
   }
 
   // This method checks the current connectivity status
@@ -43,7 +46,8 @@ class _OrderScreenState extends State<OrderScreen> {
     if (connectivityResult == ConnectivityResult.none) {
       showErrorToast(ChapaStrings.connectionError);
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ProfileScreen()));
     }
   }
 
@@ -56,22 +60,21 @@ class _OrderScreenState extends State<OrderScreen> {
       }).toList();
     });
   }
-  void setCatagory(String catagory){
-    setState((){
-        activeCatagory=catagory;
-       
+
+  void setCatagory(String catagory) {
+    setState(() {
+      activeCatagory = catagory;
     });
     setState(() {
-      if(catagory=="All"){
-        filteredFoodItems=foodItems;
-      }
-      else{
-        filteredFoodItems=foodItems.where((food)=>food.catagory==catagory).toList();
+      if (catagory == "All") {
+        filteredFoodItems = foodItems;
+      } else {
+        filteredFoodItems =
+            foodItems.where((food) => food.catagory == catagory).toList();
       }
     });
-    
-      
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,79 +83,151 @@ class _OrderScreenState extends State<OrderScreen> {
           children: [
             // Search bar and cart: fixed at the top
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: 40,
-                    child: TextField(
-                      controller: _searchController,
-                      autofocus: false,
-                      style: GoogleFonts.urbanist(),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Search",
-                        hintStyle: GoogleFonts.urbanist(),
-                        focusColor: Colors.black,
-                        
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                          child: FaIcon(FontAwesomeIcons.search),
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      User? user = FirebaseAuth.instance.currentUser;
-                      if (user != null) {
-                        await checkConnectivityAndProceed();
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 25,
-                      child: FaIcon(Icons.person_3_outlined,size: 30,),
-                      
-                      foregroundColor: Colors.black,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>CartScreen()));
-                    },
-                    child: Stack(
-                      children: [
-                        FaIcon(FontAwesomeIcons.cartShopping,size: 30,),
-                        Container(
-                          alignment: Alignment.topRight,
-                          height: 30,
-                          width: 30,
-                          child: Consumer<CartProvider>(
-                            builder: (context, cartProvider, child) {
-                              return Text(
-                                cartProvider.totalQuantity().toString(),
-                                style: GoogleFonts.urbanist(
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      // Modern Search Bar
+      Expanded(
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.deepPurple.withOpacity(0.08),
+                blurRadius: 12,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: TextField(
+            controller: _searchController,
+            style: GoogleFonts.urbanist(fontWeight: FontWeight.w600),
+            decoration: InputDecoration(
+              hintText: "Search for food",
+              prefixIcon: Icon(FontAwesomeIcons.search, color: primaryColor, size: 20),
+              border: InputBorder.none,
+              hintStyle: GoogleFonts.urbanist(
+                fontSize: 16,
+                color: Colors.deepPurple[200],
+                fontWeight: FontWeight.w500,
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 12),
+            ),
+          ),
+        ),
+      ),
+      SizedBox(width: 14),
+      // Profile Button with Glass Effect
+      GestureDetector(
+        onTap: () async {
+          User? user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+            await checkConnectivityAndProceed();
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()),
+            );
+          }
+        },
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white.withOpacity(0.25),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.deepPurple.withOpacity(0.10),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ],
+            border: Border.all(color: Colors.deepPurple.withOpacity(0.12)),
+            // Glassmorphism
+            backgroundBlendMode: BlendMode.overlay,
+          ),
+          child: Center(
+            child: FaIcon(
+              Icons.person_3_outlined,
+              size: 28,
+              color: primaryColor,
+            ),
+          ),
+        ),
+      ),
+      SizedBox(width: 10),
+      // Cart Button with Badge
+      GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartScreen()),
+          );
+        },
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white.withOpacity(0.25),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.deepPurple.withOpacity(0.10),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
                   ),
                 ],
+                border: Border.all(color: Colors.deepPurple.withOpacity(0.12)),
+              ),
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.cartShopping,
+                  size: 24,
+                  color: primaryColor,
+                ),
               ),
             ),
+            // Cart Badge
+            Positioned(
+              top: -4,
+              right: -4,
+              child: Consumer<CartProvider>(
+                builder: (context, cartProvider, child) {
+                  final count = cartProvider.totalQuantity();
+                  return count > 0
+                      ? Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child: Text(
+                            count.toString(),
+                            style: GoogleFonts.urbanist(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+),
             // Scrollable content starts here
             Expanded(
               child: SingleChildScrollView(
@@ -288,15 +363,41 @@ class _OrderScreenState extends State<OrderScreen> {
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
-                          CatagoryButtons(btnColor: activeCatagory=='All'? Colors.green:Colors.white, title: "All", setCatagory:() => setCatagory('All'), ),
-                          SizedBox(width: 10,),
-                          CatagoryButtons(btnColor: activeCatagory=='Fast food'? Colors.green:Colors.white, title: "Fast food",setCatagory: () => setCatagory('Fast food'), ),
-                          SizedBox(width: 10,),
-                          CatagoryButtons(btnColor: activeCatagory=='Traditional'? Colors.green:Colors.white, title: "Traditional", setCatagory: () => setCatagory('Traditional')),
-                          SizedBox(width: 10,),
-                          CatagoryButtons(btnColor: activeCatagory=='Drink'? Colors.green:Colors.white, title: "Drink",setCatagory: () => setCatagory('Drink')),
-                          
-                          
+                            CatagoryButtons(
+                              btnColor: activeCatagory == 'All'
+                                  ? Colors.green
+                                  : Colors.white,
+                              title: "All",
+                              setCatagory: () => setCatagory('All'),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            CatagoryButtons(
+                              btnColor: activeCatagory == 'Fast food'
+                                  ? Colors.green
+                                  : Colors.white,
+                              title: "Fast food",
+                              setCatagory: () => setCatagory('Fast food'),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            CatagoryButtons(
+                                btnColor: activeCatagory == 'Traditional'
+                                    ? Colors.green
+                                    : Colors.white,
+                                title: "Traditional",
+                                setCatagory: () => setCatagory('Traditional')),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            CatagoryButtons(
+                                btnColor: activeCatagory == 'Drink'
+                                    ? Colors.green
+                                    : Colors.white,
+                                title: "Drink",
+                                setCatagory: () => setCatagory('Drink')),
                           ],
                         ),
                       ),
@@ -313,7 +414,8 @@ class _OrderScreenState extends State<OrderScreen> {
                           childAspectRatio: 0.7,
                         ),
                         padding: const EdgeInsets.all(10.0),
-                        itemCount: filteredFoodItems.length, // Use filtered items
+                        itemCount:
+                            filteredFoodItems.length, // Use filtered items
                         itemBuilder: (BuildContext context, int index) {
                           var food = filteredFoodItems[index];
                           return FoodItemWidget(
@@ -352,8 +454,10 @@ class _OrderScreenState extends State<OrderScreen> {
                 leading: Icon(Icons.shopping_bag, color: Colors.green),
                 title: Text('Your Orders', style: GoogleFonts.urbanist()),
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => YourOrdersScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => YourOrdersScreen()));
                 },
               ),
               Divider(),

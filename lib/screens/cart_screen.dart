@@ -65,10 +65,10 @@ class _CartScreenState extends State<CartScreen> {
                     Center(
                       child: Column(
                         children: [
-                          Icon(FontAwesomeIcons.cartShopping,color:secondaryColor,size: 100,),
+                          Icon(FontAwesomeIcons.cartShopping,color: Colors.white,size: 100,),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('Your cart is empty. Please add some foods and drinks!',style:GoogleFonts.urbanist(color:secondaryColor,fontSize:18)),
+                            child: Text('Your cart is empty. Please add some foods and drinks!',style:GoogleFonts.urbanist(color: Colors.white,fontSize:18)),
                           ),
                         ],
                       ),

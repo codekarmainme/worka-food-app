@@ -1,0 +1,2 @@
+C:/Users/hp/Desktop/worka-food-app/android/app/.cxx/RelWithDebInfo/2n1k4l67/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/hp/Desktop/worka-food-app/android/app/.cxx/RelWithDebInfo/2n1k4l67/arm64-v8a/CMakeFiles/rebuild_cache.dir

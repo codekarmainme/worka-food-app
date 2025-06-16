@@ -21,12 +21,12 @@ class CartWidget extends StatelessWidget {
               onPressed: (){
                 cartProvider.decreaseQuantity(name);
               },
-              icon: FaIcon(FontAwesomeIcons.minus)),
+              icon: FaIcon(FontAwesomeIcons.minus,color: Colors.white)),
               IconButton(
                 onPressed: (){
                   cartProvider.increaseQuantity(name);
                 },
-                icon: FaIcon(FontAwesomeIcons.add)),
+                icon: FaIcon(FontAwesomeIcons.add,color: Colors.white)),
             SizedBox(
               width: 10,
             ),
@@ -43,7 +43,7 @@ class CartWidget extends StatelessWidget {
                 ),
                 Text(amount + ' X ' + price,
                     style: GoogleFonts.urbanist(
-                        color: Colors.black, fontWeight: FontWeight.bold))
+                        color: Colors.white, fontWeight: FontWeight.bold))
               ],
             ),
             SizedBox(
@@ -53,7 +53,7 @@ class CartWidget extends StatelessWidget {
               onPressed: (){
                 cartProvider.removeItem(name);
               },
-              icon: FaIcon(FontAwesomeIcons.multiply)),
+              icon: FaIcon(FontAwesomeIcons.multiply,color: Colors.white)),
           ],
         );
       },
